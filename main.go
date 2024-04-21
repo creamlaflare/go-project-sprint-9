@@ -30,7 +30,6 @@ func Generator(ctx context.Context, ch chan<- int64, fn func(int64)) {
 
 // Worker читает число из канала in и пишет его в канал out.
 func Worker(in <-chan int64, out chan<- int64) {
-	ticker := time.NewTicker(time.Millisecond)
 	defer close(out)
 	// 2. Функция Worker
 	for {
@@ -39,7 +38,7 @@ func Worker(in <-chan int64, out chan<- int64) {
 			break
 		}
 		out <- v
-		<-ticker.C
+		time.Sleep(time.Millisecond)
 	}
 }
 
@@ -47,8 +46,7 @@ func main() {
 	chIn := make(chan int64)
 
 	// 3. Создание контекста
-	ctx := context.Background()
-	ctxGenerator, cancel := context.WithTimeout(ctx, time.Second)
+	ctxGenerator, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
 	// для проверки будем считать количество и сумму отправленных чисел
@@ -90,11 +88,11 @@ func main() {
 	}
 
 	go func() {
+		defer cancel()
 		// ждём завершения работы всех горутин для outs
 		wg.Wait()
 		// закрываем результирующий канал
 		close(chOut)
-		cancel()
 	}()
 
 	var count int64 // количество чисел результирующего канала
