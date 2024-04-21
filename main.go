@@ -58,7 +58,7 @@ func main() {
 	// генерируем числа, считая параллельно их количество и сумму
 	go Generator(ctxGenerator, chIn, func(i int64) {
 		inputSum += i
-		inputCount += i
+		inputCount += 1
 	})
 
 	var wg sync.WaitGroup
