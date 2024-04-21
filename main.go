@@ -101,9 +101,7 @@ func main() {
 	// 5. Читаем числа из результирующего канала
 	for v := range chOut {
 		sum += v
-	}
-	for _, v := range amounts {
-		count += v
+		count++
 	}
 
 	fmt.Println("Количество чисел", inputCount, count)
